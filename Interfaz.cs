@@ -1,47 +1,97 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class Interfaz
+public class MatrizTransiciones
 {
-    private string Entrada;
+    private string _Entrada;
+    private int[,] _MT;
+    private int _Estado;
 
-    public void PedirEntrada()
+    public MatrizTransiciones()
     {
-        Console.WriteLine("Ingrese una cadena de entrada: ");
-        Entrada = Console.ReadLine();
-    }
-
-    public string GetEntrada()
-    {
-        return Entrada;
-    }
-
-    public void ImprimirEstado(int Estado)
-    {
-        switch (Estado)
+        _Estado = 0;
+        _MT = new int[7, 7] // Aumentar el tamaño de la matriz para incluir el guion bajo
         {
-            case 100:
-                Console.WriteLine("Estado 100");
+            //         0     1     2     3     4     5     6
+            //       dig   .     ;     esp   letra  "     _
+            /* 0 */ {  1,   -1,   -1,   -1,   4,    5,    4 },
+            /* 1 */ {  1,    2,  100,  100,  -1,   -1,   -1 },
+            /* 2 */ {  3,   -1,   -1,   -1,   -1,   -1,   -1 },
+            /* 3 */ {  3,   -1,  200,  200,  -1,   -1,   -1 },
+            /* 4 */ {  4,   -1,  300,  300,   4,   -1,    4 },
+            /* 5 */ {  5,    5,   -1,   -1,   5,    6,   -1 },
+            /* 6 */ { -1,   -1,  500,  500,  -1,   -1,   -1 }
+        };
+    }
+
+    public void SetEntrada(string entrada)
+    {
+        _Entrada = entrada;
+    }
+
+    public void AnalizarEntrada()
+    {
+        bool empiezaConComillas = false;
+        foreach (char caracter in _Entrada)
+        {
+            if (Char.IsDigit(caracter))
+            {
+                _Estado = _MT[_Estado, 0];
+            }
+            else if (caracter == '.')
+            {
+                _Estado = _MT[_Estado, 1];
+            }
+            else if (caracter == ';')
+            {
+                _Estado = _MT[_Estado, 2];
+            }
+            else if (caracter == ' ')
+            {
+                _Estado = _MT[_Estado, 3];
+            }
+            else if (Char.IsLetter(caracter))
+            {
+                _Estado = _MT[_Estado, 4];
+            }
+            else if (caracter == '"')
+            {
+                if (_Estado == 0)
+                {
+                    empiezaConComillas = true;
+                }
+                _Estado = _MT[_Estado, 5];
+            }
+            else if (caracter == '_')
+            {
+                _Estado = _MT[_Estado, 6];
+            }
+            else
+            {
+                _Estado = -1;
+            }
+
+            if (_Estado == -1)
+            {
                 break;
-            case 200:
-                Console.WriteLine("Estado 200");
-                break;
-            case 300:
-                Console.WriteLine("Estado 300");
-                break;
-            case 400:
-                Console.WriteLine("Es el inicio de una cadena de texto.");
-                break;
-            case 500:
-                Console.WriteLine("Estado 400");
-                break;
-            default:
-                Console.WriteLine("Error: Entrada no reconocida.");
-                break;
+            }
         }
-        Console.ReadKey();
+
+        if (_Estado == 6 && empiezaConComillas)
+        {
+            _Estado = 500;
+        }
+        else if (_Estado < 100)
+        {
+            _Estado = -1;
+        }
+    }
+
+    public int GetEstado()
+    {
+        return _Estado;
     }
 }
