@@ -24,19 +24,19 @@ public class Interfaz
         switch (Estado)
         {
             case 100:
-                Console.WriteLine("Es un número entero.");
+                Console.WriteLine("Estado 100");
                 break;
             case 200:
-                Console.WriteLine("Es un número flotante.");
+                Console.WriteLine("Estado 200");
                 break;
             case 300:
-                Console.WriteLine("Es una variable.");
+                Console.WriteLine("Estado 300");
                 break;
             case 400:
                 Console.WriteLine("Es el inicio de una cadena de texto.");
                 break;
             case 500:
-                Console.WriteLine("Es una cadena de texto completa.");
+                Console.WriteLine("Estado 400");
                 break;
             default:
                 Console.WriteLine("Error: Entrada no reconocida.");
